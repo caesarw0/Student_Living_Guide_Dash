@@ -7,9 +7,9 @@ from dash import dcc, html
 
 df = pd.read_csv('../data/processed_data.csv')
 
-
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+server = app.server
 # =========================
 # UI
 # =========================
@@ -61,41 +61,34 @@ layout = html.Div([
         dbc.Col(content, width=10)
     ])
 ])
-
+app.layout = layout
 # =========================
 # Server
 # =========================
-def register_callbacks(app):
 
-    @app.callback(Output('output-tab1', 'children'),
-              [
-               Input('country_select', 'value')])
-    def update_output_tab1(country):
-        if country == []:
-            return html.Div('Please select a continent and a country.')
-        else:
-            filtered_df = df[df['Country'] == country]
-            return dcc.Graph(
-                figure={
-                    'data': [
-                        {'x': filtered_df['Country'], 'y': filtered_df['Cost of Living Index'], 'type': 'bar', 'name': 'Cost of Living Index'},
-                        {'x': filtered_df['Country'], 'y': filtered_df['Rent Index'], 'type': 'bar', 'name': 'Rent Index'}
-                    ],
-                    'layout': {
-                        'title': 'Cost of Living Index and Rent Index by Selected Country',
-                        'xaxis': {'title': 'Country'},
-                        'yaxis': {'title': 'Value'},
-                        'barmode': 'group'
-                    }
+
+@app.callback(Output('output-tab1', 'children'),
+            [
+            Input('country_select', 'value')])
+def update_output_tab1(country):
+    if country == []:
+        return html.Div('Please select a continent and a country.')
+    else:
+        filtered_df = df[df['Country'] == country]
+        return dcc.Graph(
+            figure={
+                'data': [
+                    {'x': filtered_df['Country'], 'y': filtered_df['Cost of Living Index'], 'type': 'bar', 'name': 'Cost of Living Index'},
+                    {'x': filtered_df['Country'], 'y': filtered_df['Rent Index'], 'type': 'bar', 'name': 'Rent Index'}
+                ],
+                'layout': {
+                    'title': 'Cost of Living Index and Rent Index by Selected Country',
+                    'xaxis': {'title': 'Country'},
+                    'yaxis': {'title': 'Value'},
+                    'barmode': 'group'
                 }
-            )
-
-
-app.layout = layout
-
-register_callbacks(app)
-
-
+            }
+        )
 
 if __name__ == '__main__':
     app.run_server(debug=True)
