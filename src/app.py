@@ -5,7 +5,7 @@ import pandas as pd
 from ui import layout
 from server import register_callbacks
 
-df = pd.read_csv('data/processed_data.csv')
+df = pd.read_csv('../data/processed_data.csv')
 
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])

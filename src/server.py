@@ -4,7 +4,7 @@ from dash import dcc, html
 
 import pandas as pd
 
-df = pd.read_csv('data/processed_data.csv')
+df = pd.read_csv('../data/processed_data.csv')
 
 
 def register_callbacks(app):
