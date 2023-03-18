@@ -6,6 +6,14 @@ The Student Living Guide app is created to help students studying in New York wh
 
 This dashboard aims to provide guidance on the living cost in 2022 and its main target audience is New York students who are looking for a place to travel or continue their studies. Please find more information from our [proposal](https://github.com/UBC-MDS/Student_Living_Guide/blob/main/reports/proposal.md).
 
+## Usage
+
+There are ... filters
+
+The client can use tab 1 [] to do xxx
+
+The client can use tab 2 [] to do yyy
+
 ## Contributions
 
 Interested in contributing? Please check out our [contributors' guidelines](CONTRIBUTING.md).
@@ -15,4 +23,7 @@ It is important to maintain a welcoming and respectful environment while you con
 ## License
 
 Licensed under the terms of the MIT license.
-Cost of Living dataset taken from https://www.numbeo.com/cost-of-living/rankings.jsp
+
+## Reference
+
+The cost of living dataset used in this dashboard is taken from [Numbeo.com](https://www.numbeo.com/cost-of-living/rankings.jsp).
