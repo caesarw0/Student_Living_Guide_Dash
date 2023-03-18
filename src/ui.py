@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 
 import pandas as pd
 
-df = pd.read_csv('data/processed_data.csv')
+df = pd.read_csv('../data/processed_data.csv')
 
 
 # the style arguments for the sidebar. We use position:fixed and a fixed width
