@@ -95,186 +95,91 @@
 
 
 # V2
-# import dash
-# from dash import html
-# from dash import dcc
-# import dash_bootstrap_components as dbc
-
-# app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SANDSTONE])
-
-
-# navbar = dbc.NavbarSimple(
-#     children=[
-#         dbc.NavItem(dbc.NavLink("Page 1", href="#")),
-#         dbc.DropdownMenu(
-#             children=[
-#                 dbc.DropdownMenuItem("More pages", header=True),
-#                 dbc.DropdownMenuItem("Page 2", href="#"),
-#                 dbc.DropdownMenuItem("Page 3", href="#"),
-#             ],
-#             nav=True,
-#             in_navbar=True,
-#             label="More",
-#         ),
-#     ],
-#     brand="Cost Viewer",
-#     brand_href="#",
-#     color="dark",
-#     dark=True,
-# )
-
-# app.layout = html.Div([
-#     html.Nav(navbar, style={"marginBottom": "20px"}),
-#     html.Div([
-#         dbc.Row(
-#             [
-#             dbc.Col(html.Div(
-#                             dcc.Dropdown(
-#                                     id='continent-dropdown',
-#                                     options=[
-#                                         {'label': 'Africa', 'value': 'Africa'},
-#                                         {'label': 'Asia', 'value': 'Asia'},
-#                                         {'label': 'Europe', 'value': 'Europe'},
-#                                         {'label': 'North America', 'value': 'North America'},
-#                                         {'label': 'South America', 'value': 'South America'},
-#                                         {'label': 'Oceania', 'value': 'Oceania'}
-#                                     ],
-#                                     multi=True,
-#                                     placeholder='Select a continent'
-#                                 )
-#                             )
-#                     ),
-#                 dbc.Col(html.Div(
-#                                 dcc.Dropdown(
-#                                         id='index-dropdown',
-#                                         options=[
-#                                             {'label': 'Cost of Living Index', 'value': 'Cost of Living Index'},
-#                                             {'label': 'Rent Index', 'value': 'Rent Index'},
-#                                             {'label': 'Cost of Living Plus Rent Index', 'value': 'Cost of Living Plus Rent Index'},
-#                                             {'label': 'Groceries Index', 'value': 'Groceries Index'},
-#                                             {'label': 'Restaurant Price Index', 'value': 'Restaurant Price Index'},
-#                                             {'label': 'Local Purchasing Power Index', 'value': 'Local Purchasing Power Index'}
-#                                         ],
-#                                         value='Cost of Living Index',
-#                                         clearable=False
-#                                     ))
-#                         ),
-#                 dbc.Col(html.Div(
-#                                 dcc.RangeSlider(
-#                                         id='index-slider',
-#                                         min=0,
-#                                         max=100,
-#                                         step=1,
-#                                         value=[20, 80],
-#                                         marks={
-#                                             0: '0',
-#                                             25: '25',
-#                                             50: '50',
-#                                             75: '75',
-#                                             100: '100'
-#                                         }
-#                                     )
-#                                 )),
-#             ]
-#         ),
-#         html.H2('Filtering Widgets')
-#     ], className='container')
-# ])
-
-# if __name__ == '__main__':
-#     app.run_server(debug=True)
-
-
-# test 1
-
-import pandas as pd
-import plotly.express as px
 import dash
+from dash import html
 from dash import dcc
-from dash import html 
+import dash_bootstrap_components as dbc
 
-# Load data into a Pandas DataFrame
-df = pd.read_csv("../data/Centre_Details_Data.csv")
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SANDSTONE])
 
-city_options = [
-    {"label": "Chennai", "value": "Chennai"},
-    {"label": "Bengaluru", "value": "Bengaluru"},
-    {"label": "New Delhi", "value": "New Delhi"},
-    {"label": "Kolkata", "value": "Kolkata"},
-    {"label": "Patna", "value": "Patna"},
-    {"label": "Pune", "value": "Pune"},
-    {"label": "Trichy", "value": "Trichy"}
-]
 
-subject_options = [
-    {"label": "Mathematics", "value": "Mathematics"},
-    {"label": "English", "value": "English"},
-    {"label": "Science", "value": "Science"},
-    {"label": "Dance", "value": "Dance"},
-    {"label": "Mentoring", "value": "MentoringPatna"},
-    {"label": "Computers", "value": "Computers"}
-]
-# Create the app
-app = dash.Dash(__name__)
+navbar = dbc.NavbarSimple(
+    children=[
+        dbc.NavItem(dbc.NavLink("Page 1", href="#")),
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem("More pages", header=True),
+                dbc.DropdownMenuItem("Page 2", href="#"),
+                dbc.DropdownMenuItem("Page 3", href="#"),
+            ],
+            nav=True,
+            in_navbar=True,
+            label="More",
+        ),
+    ],
+    brand="Cost Viewer",
+    brand_href="#",
+    color="dark",
+    dark=True,
+)
 
-server = app.server
-
-# Define the layout
-
-app.layout = html.Div(children=[
-    html.H1(children='Children Centers'),
-    html.Div(children=[
-        html.Label('Select a City',style={'font-weight': 'bold',"margin-right": "10px"}),
-        dcc.Dropdown(
-            id="city-dropdown",
-            options=city_options,
-            value=city_options[0]["value"],
-            style={"width": "150px","fontsize":"1px"}
-        )
-    ], style={'display': 'flex', 'align-items': 'center', 'margin-top': '10px', 'margin-bottom': '10px'}),
-
-    dcc.Graph(id='map-graph'),
-
-    dcc.Graph(id='bar-graph')
+app.layout = html.Div([
+    html.Nav(navbar, style={"marginBottom": "20px"}),
+    html.Div([
+        dbc.Row(
+            [
+            dbc.Col(html.Div(
+                            dcc.Dropdown(
+                                    id='continent-dropdown',
+                                    options=[
+                                        {'label': 'Africa', 'value': 'Africa'},
+                                        {'label': 'Asia', 'value': 'Asia'},
+                                        {'label': 'Europe', 'value': 'Europe'},
+                                        {'label': 'North America', 'value': 'North America'},
+                                        {'label': 'South America', 'value': 'South America'},
+                                        {'label': 'Oceania', 'value': 'Oceania'}
+                                    ],
+                                    multi=True,
+                                    placeholder='Select a continent'
+                                )
+                            )
+                    ),
+                dbc.Col(html.Div(
+                                dcc.Dropdown(
+                                        id='index-dropdown',
+                                        options=[
+                                            {'label': 'Cost of Living Index', 'value': 'Cost of Living Index'},
+                                            {'label': 'Rent Index', 'value': 'Rent Index'},
+                                            {'label': 'Cost of Living Plus Rent Index', 'value': 'Cost of Living Plus Rent Index'},
+                                            {'label': 'Groceries Index', 'value': 'Groceries Index'},
+                                            {'label': 'Restaurant Price Index', 'value': 'Restaurant Price Index'},
+                                            {'label': 'Local Purchasing Power Index', 'value': 'Local Purchasing Power Index'}
+                                        ],
+                                        value='Cost of Living Index',
+                                        clearable=False
+                                    ))
+                        ),
+                dbc.Col(html.Div(
+                                dcc.RangeSlider(
+                                        id='index-slider',
+                                        min=0,
+                                        max=100,
+                                        step=1,
+                                        value=[20, 80],
+                                        marks={
+                                            0: '0',
+                                            25: '25',
+                                            50: '50',
+                                            75: '75',
+                                            100: '100'
+                                        }
+                                    )
+                                )),
+            ]
+        ),
+        html.H2('Filtering Widgets')
+    ], className='container')
 ])
 
-# Define the callbacks
-@app.callback(
-    dash.dependencies.Output('map-graph', 'figure'),
-    [dash.dependencies.Input('city-dropdown', 'value')]
-)
-def update_map(city):
-    filtered_df = df[df['City'] == city]
-    fig = px.scatter_mapbox(
-        filtered_df, 
-        lat='lat', 
-        lon='long', 
-        hover_name='Centre Name', 
-        hover_data=['Children Available'],
-        size='Children Available',
-        color='Subject',
-        zoom=10,
-        title=f"Location of Centers in {city}"
-    )
-    fig.update_layout(mapbox_style="open-street-map")
-
-    return fig
-
-@app.callback(
-    dash.dependencies.Output('bar-graph', 'figure'),
-    [dash.dependencies.Input('city-dropdown', 'value')]
-)
-def update_bar(city):
-    filtered_df = df[df['City'] == city]
-    fig = px.bar(
-        filtered_df, 
-        x='Centre Name', 
-        y='Children Available',
-        color='Subject',
-        title = f"Number of Children Available Centerwise in {city}"
-    )
-    return fig
-
-# Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)
