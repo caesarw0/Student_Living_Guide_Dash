@@ -99,10 +99,15 @@ import dash
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
+from dash.dependencies import Input, Output
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SANDSTONE])
 
+server = app.server
 
+# =========================
+# UI
+# =========================
 navbar = dbc.NavbarSimple(
     children=[
         dbc.NavItem(dbc.NavLink("Page 1", href="#")),
@@ -128,7 +133,9 @@ app.layout = html.Div([
     html.Div([
         dbc.Row(
             [
-            dbc.Col(html.Div(
+            dbc.Col(
+                    html.Div([
+                            html.Label('Select a continent', style={"marginBottom": "5px"}),
                             dcc.Dropdown(
                                     id='continent-dropdown',
                                     options=[
@@ -139,12 +146,14 @@ app.layout = html.Div([
                                         {'label': 'South America', 'value': 'South America'},
                                         {'label': 'Oceania', 'value': 'Oceania'}
                                     ],
+                                    value=['Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'],
                                     multi=True,
                                     placeholder='Select a continent'
                                 )
-                            )
+            ])
                     ),
-                dbc.Col(html.Div(
+                dbc.Col(html.Div([
+                                html.Label('Select an interest of index', style={"marginBottom": "5px"}),
                                 dcc.Dropdown(
                                         id='index-dropdown',
                                         options=[
@@ -157,9 +166,10 @@ app.layout = html.Div([
                                         ],
                                         value='Cost of Living Index',
                                         clearable=False
-                                    ))
+                                    )])
                         ),
-                dbc.Col(html.Div(
+                dbc.Col(html.Div([
+                                html.Label(id='index-range-label', children='Select a range',style={"marginBottom": "5px"}),
                                 dcc.RangeSlider(
                                         id='index-slider',
                                         min=0,
@@ -174,12 +184,20 @@ app.layout = html.Div([
                                             100: '100'
                                         }
                                     )
-                                )),
+                                ])
+                        ),
             ]
-        ),
-        html.H2('Filtering Widgets')
+        )
     ], className='container')
 ])
+
+# =========================
+# Server
+# =========================
+@app.callback(Output('index-range-label', 'children'),
+              Input('index-dropdown', 'value'))
+def update_label(index_value):
+    return f'Select a {index_value} range'
 
 if __name__ == '__main__':
     app.run_server(debug=True)
