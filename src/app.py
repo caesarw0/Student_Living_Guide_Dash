@@ -1,100 +1,3 @@
-# import dash
-# import dash_bootstrap_components as dbc
-# import pandas as pd
-
-# from dash.dependencies import Input, Output
-# from dash import dcc, html
-
-# df = pd.read_csv('../data/processed_data.csv')
-
-# app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SANDSTONE])
-
-# server = app.server
-# # =========================
-# # UI
-# # =========================
-# # the style arguments for the sidebar. We use position:fixed and a fixed width
-# SIDEBAR_STYLE = {
-#     "position": "fixed",
-#     "top": 0,
-#     "left": 0,
-#     "bottom": 0,
-#     "width": "13rem",
-#     "padding": "2rem 1rem",
-#     "background-color": "#f8f9fa",
-# }
-
-
-# sidebar = html.Div([
-#         html.H2("Filter"),
-#         html.Hr(),
-#         dbc.Nav(
-#             [dcc.Dropdown(id='country_select',
-#                         options=[{'label': i, 'value': i} for i in df['Country'].unique()],
-#                         multi=False,
-#                         placeholder="Select countries"
-#                         )
-#             ],
-#             vertical=True,
-#             pills=True
-#         )
-#     ]
-#     , style=SIDEBAR_STYLE)
-
-# content = html.Div([
-#         dbc.Row(html.H2("Title")),
-#         dbc.Row([
-#             dbc.Col(html.Div(id='output-tab1'), width=6),
-#             dbc.Col(html.Div([
-#                         html.H4("2nd col"),
-#                         html.Hr()
-#                         ]
-#                     ), width=6)
-#         ])
-# ])
-
-
-# # layout = html.Div([sidebar,content])
-# layout = html.Div([
-#     dbc.Row([
-#         dbc.Col(sidebar, width=2),
-#         dbc.Col(content, width=10)
-#     ])
-# ])
-# app.layout = layout
-# # =========================
-# # Server
-# # =========================
-
-
-# @app.callback(Output('output-tab1', 'children'),
-#             [
-#             Input('country_select', 'value')])
-# def update_output_tab1(country):
-#     if country == []:
-#         return html.Div('Please select a continent and a country.')
-#     else:
-#         filtered_df = df[df['Country'] == country]
-#         return dcc.Graph(
-#             figure={
-#                 'data': [
-#                     {'x': filtered_df['Country'], 'y': filtered_df['Cost of Living Index'], 'type': 'bar', 'name': 'Cost of Living Index'},
-#                     {'x': filtered_df['Country'], 'y': filtered_df['Rent Index'], 'type': 'bar', 'name': 'Rent Index'}
-#                 ],
-#                 'layout': {
-#                     'title': 'Cost of Living Index and Rent Index by Selected Country',
-#                     'xaxis': {'title': 'Country'},
-#                     'yaxis': {'title': 'Value'},
-#                     'barmode': 'group'
-#                 }
-#             }
-#         )
-
-# if __name__ == '__main__':
-#     app.run_server(debug=True)
-
-
-# V2
 import dash
 from dash import html, dcc, dash_table
 import dash_bootstrap_components as dbc
@@ -111,7 +14,9 @@ server = app.server
 df = pd.read_csv('../data/processed_data.csv')
 # drop unused column
 df = df.drop(['Rank'], axis=1)
-
+indices = ['Cost of Living Index','Rent Index',
+                      'Cost of Living Plus Rent Index','Groceries Index',
+                      'Restaurant Price Index','Local Purchasing Power Index']
 # =========================
 # UI
 # =========================
@@ -129,25 +34,33 @@ navbar = dbc.NavbarSimple(
 
 kpi_card_1 = dbc.Card(
     id='kpi-card-1',
-    style={"width": "18rem"}
+    #style={"width": "18rem"}
 )
 kpi_card_2 = dbc.Card(
     id='kpi-card-2',
-    style={"width": "18rem"}
+    #style={"width": "18rem"}
 )
 kpi_card_3 = dbc.Card(
     id='kpi-card-3',
-    style={"width": "18rem"}
+    #style={"width": "18rem"}
 )
 overview_layout = html.Div([
                             dbc.Row([
-                                    dbc.Col(kpi_card_1),
-                                    dbc.Col(kpi_card_2),
-                                    dbc.Col(kpi_card_3),
-                                    dcc.Graph(id='map', style={"marginBottom": "5px"}),
-                                    dcc.Graph(id='scatter')
-
-                                     ])
+                                    dbc.Col([dcc.Graph(id='map'),
+                                             dcc.Graph(id='corr'),
+                                             ] , width=4),
+                                    dbc.Col([
+                                        dbc.Row([
+                                            dbc.Col(kpi_card_1),
+                                            dbc.Col(kpi_card_2),
+                                            dbc.Col(kpi_card_3),]),
+                                        dbc.Row([
+                                                dbc.Col(dcc.Graph(id='country_bar'), width=4),
+                                                dbc.Col(dcc.Graph(id='scatter'), width=8),
+                                                        ]),
+                                        dbc.Row([dcc.Graph(id='stack'),])
+                                    ], width=8)
+                                ])
 
                             ], id='overview-content')
 table_layout = html.Div(
@@ -353,6 +266,7 @@ def update_scatter(index_value, data):
         fig = go.Figure()
         fig.add_annotation(x=1, y=1, text='No resulting data',
                            showarrow=False, font=dict(size=20))
+        fig.update_layout(title=f'Cost of Living Index vs. {index_value}')
         return fig
     df = pd.DataFrame(data)
     fig = px.scatter(df, x='Cost of Living Index', y=index_value, color='Continent', 
@@ -422,8 +336,6 @@ def update_kpi(index_value, data):
         Input('datatable', 'data')
 )
 def update_map(index_value, data):
-    
-    
     if len(data) == 0:
         df = pd.DataFrame()
 
@@ -443,6 +355,7 @@ def update_map(index_value, data):
                 )
             ]
         )
+        fig.update_layout(title=f'{index_value} Scatter Plot')
         return fig
     
     # if we have data, plot the map
@@ -463,6 +376,84 @@ def update_map(index_value, data):
                       mapbox_style="open-street-map",
                       margin={"r": 20, "t": 50, "l": 20, "b": 20})
     return fig
+
+@app.callback(
+    Output('country_bar', 'figure'),
+    Input('map', 'clickData'),
+    Input('datatable', 'data')
+)
+def display_click_data(clickData, data):
+    if clickData is not None:
+        df = pd.DataFrame(data)
+        country_name = clickData['points'][0]['hovertext']
+        
+        filtered_df = df.query(f"Country == '{country_name}'")
+        filtered_df = filtered_df[indices].T
+        fig = go.Figure(data=[go.Bar(x=filtered_df.index, y=filtered_df.iloc[:, 0])])
+        fig.update_layout(title=f'{country_name} Index Value')
+        return fig
+
+    fig = go.Figure()
+    fig.add_annotation(x=1, y=1, text='No resulting data',
+                    showarrow=False, font=dict(size=20))
+    fig.update_layout(title='Country Index Value')
+    return fig
+
+
+@app.callback(
+        Output('corr', 'figure'),
+        Input('datatable', 'data')
+)
+def update_correlation(data):
+    if len(data) == 0:
+        fig = go.Figure()
+        fig.add_annotation(x=1, y=1, text='No resulting data',
+                           showarrow=False, font=dict(size=20))
+        fig.update_layout(title='Correlation Matrix Heatmap')
+        return fig
+    df = pd.DataFrame(data)
+
+    # calculate the correlation matrix
+    corr_matrix = df[indices].corr()
+
+    heatmap = go.Heatmap(
+        x=indices,
+        y=indices,
+        z=corr_matrix.values,
+        colorscale='Viridis',
+    )
+
+    layout = go.Layout(
+        title='Correlation Matrix Heatmap',
+    )
+
+    fig = go.Figure(data=[heatmap], layout=layout)
+    return fig
+
+@app.callback(
+        Output('stack', 'figure'),
+        Input('index-dropdown', 'value'),
+        Input('datatable', 'data')
+)
+def update_stack(index_value, data):
+    if len(data) == 0:
+        fig = go.Figure()
+        fig.add_annotation(x=1, y=1, text='No resulting data',
+                           showarrow=False, font=dict(size=20))
+        fig.update_layout(title='Top N Most Expensive Country')
+        return fig
+    
+    df = pd.DataFrame(data)
+    sorted_df = df.sort_values(by=index_value, ascending=False)
+
+    top_n = 10
+    if len(data) < 10: 
+        top_n = len(data)
+
+    top_df = sorted_df.head(top_n)
+    fig = px.bar(top_df, x="Country", y=indices, title=f"Cost of Living Breakdown for the Top {top_n} Most Expensive Countries")
+    return fig
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
