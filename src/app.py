@@ -127,8 +127,25 @@ navbar = dbc.NavbarSimple(
     dark=True,
 )
 
-overview_layout = html.Div([html.H1("Overview"),
-                            dbc.Row([dcc.Graph(id='bar')
+kpi_card_1 = dbc.Card(
+    id='kpi-card-1',
+    style={"width": "18rem"}
+)
+kpi_card_2 = dbc.Card(
+    id='kpi-card-2',
+    style={"width": "18rem"}
+)
+kpi_card_3 = dbc.Card(
+    id='kpi-card-3',
+    style={"width": "18rem"}
+)
+overview_layout = html.Div([
+                            dbc.Row([
+                                    dbc.Col(kpi_card_1),
+                                    dbc.Col(kpi_card_2),
+                                    dbc.Col(kpi_card_3),
+                                    dcc.Graph(id='map', style={"marginBottom": "5px"}),
+                                    dcc.Graph(id='scatter')
 
                                      ])
 
@@ -176,7 +193,7 @@ app.layout = html.Div([
                     ])
                 ),
                 dbc.Col(html.Div([
-                    html.Label('Select an interest of index',
+                    html.Label('Select an index of interest',
                                style={"marginBottom": "5px"}),
                     dcc.Dropdown(
                         id='index-dropdown',
@@ -322,20 +339,130 @@ def update_data(continent_value, index_value, range_value):
         range_value[0], range_value[1])]
     return filtered_data.to_dict('records')
 
+# -------------------------
+# Update plot
+# -------------------------
 
 @app.callback(
-    Output('bar', 'figure'),
+    Output('scatter', 'figure'),
+    Input('index-dropdown', 'value'),
     Input('datatable', 'data')
 )
-def get_filtered_data(data):
+def update_scatter(index_value, data):
     if len(data) == 0:
         fig = go.Figure()
         fig.add_annotation(x=1, y=1, text='No resulting data',
                            showarrow=False, font=dict(size=20))
         return fig
-    fig = px.bar(data, x='Continent', y='Cost of Living Index')
+    df = pd.DataFrame(data)
+    fig = px.scatter(df, x='Cost of Living Index', y=index_value, color='Continent', 
+                     hover_name='Country',
+                     title=f'Cost of Living Index vs. {index_value}')
+    fig.update_layout(legend_title='Continent')
     return fig
 
+@app.callback(
+    Output('kpi-card-1', 'children'),
+    Output('kpi-card-2', 'children'),
+    Output('kpi-card-3', 'children'),
+    Input('index-dropdown', 'value'),
+    Input('datatable', 'data')
+)
+def update_kpi(index_value, data):
+    if len(data) == 0:
+        card_body = html.H4(f"No resulting data")
+        card_body2 = card_body
+        card_body3 = card_body
+    else:
+        df = pd.DataFrame(data)
+        max_value = df[index_value].max()
+        max_country = df.loc[df[index_value] == max_value, 'Country'].iloc[0]
+        max_continent = df.loc[df[index_value] == max_value, 'Continent'].iloc[0]
+        min_value = df[index_value].min()
+        min_country = df.loc[df[index_value] == min_value, 'Country'].iloc[0]
+        min_continent = df.loc[df[index_value] == min_value, 'Continent'].iloc[0]
+
+        mean_value = df[index_value].mean()
+
+        card_body = [html.H5(f"{max_value:.2f}", className="card-title"),
+                        html.P(
+                            f'{max_country} ({max_continent})',
+                            className="card-text",
+                        )]
+        card_body2 = [html.H5(f"{min_value:.2f}", className="card-title"),
+                        html.P(
+                            f'{min_country} ({min_continent})',
+                            className="card-text",
+                        )]
+        card_body3 = [html.H5(f"{mean_value:.2f}", className="card-title"),]
+    value = [
+            dbc.CardHeader("Max Index Value"),
+            dbc.CardBody(
+                    card_body
+            ),
+            ]
+
+    value2 = [
+            dbc.CardHeader("Min Index Value"),
+                dbc.CardBody(
+                        card_body2
+                ),
+            ]
+    value3 = [
+            dbc.CardHeader("Mean Index Value"),
+                dbc.CardBody(
+                        card_body3
+                ),
+            ]
+    return value, value2, value3
+
+@app.callback(
+        Output('map', 'figure'),
+        Input('index-dropdown', 'value'),
+        Input('datatable', 'data')
+)
+def update_map(index_value, data):
+    
+    
+    if len(data) == 0:
+        df = pd.DataFrame()
+
+        fig = px.scatter_mapbox(df, lat=[], lon=[], height=500, zoom=1)
+        fig.update_layout(
+            mapbox_style='open-street-map',
+            margin=dict(l=20, r=20, t=20, b=20),
+            annotations=[
+                dict(
+                    text='No resulting data',
+                    x=0.5,
+                    y=0.5,
+                    xref='paper',
+                    yref='paper',
+                    showarrow=False,
+                    font=dict(size=20)
+                )
+            ]
+        )
+        return fig
+    
+    # if we have data, plot the map
+    df = pd.DataFrame(data)
+    fig = px.scatter_mapbox(
+        df,
+        lat="latitude",
+        lon="longitude",
+        hover_name="Country",
+        hover_data=[index_value],
+        zoom=3,
+        size=index_value,
+        color=index_value,
+        color_continuous_scale=px.colors.diverging.Temps,  # Change the color scale here
+    )
+    
+    fig.update_layout(title=f'{index_value} Scatter Plot', 
+                      mapbox_style="open-street-map",
+                      margin={"r": 20, "t": 50, "l": 20, "b": 20})
+    return fig
 
 if __name__ == '__main__':
     app.run_server(debug=True)
