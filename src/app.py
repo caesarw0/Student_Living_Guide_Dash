@@ -9,6 +9,8 @@ import datetime
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SANDSTONE])
 
+app.title = 'Cost Viewer'
+
 server = app.server
 
 # get data
