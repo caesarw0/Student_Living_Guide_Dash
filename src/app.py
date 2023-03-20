@@ -387,7 +387,7 @@ def update_map(index_value, data):
                 )
             ]
         )
-        fig.update_layout(title=f'<b>{index_value} Scatter Plot</b>')
+        fig.update_layout(title=f'<b>{index_value} World Map</b>')
         return fig
 
     # if we have data, plot the map
@@ -404,7 +404,7 @@ def update_map(index_value, data):
         color_continuous_scale=px.colors.diverging.Temps,
     )
 
-    fig.update_layout(title=f'<b>{index_value} Scatter Plot</b>',
+    fig.update_layout(title=f'<b>{index_value} World Map</b>',
                       mapbox_style="open-street-map",
                       margin={"r": 0, "t": 30, "l": 0, "b": 0},
                       coloraxis_colorbar=dict(
