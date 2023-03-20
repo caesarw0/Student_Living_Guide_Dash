@@ -2,6 +2,8 @@
 
 The [Student Living Guide](https://student-living-cost-dash.onrender.com) app is created to help students studying in New York who are looking to explore new countries to travel to during their vacations or to move to after graduating. We have information about the cost of living in different countries in the form of different indexes which we will make available in our app in a very user-friendly and understandable format through a dashboard!
 
+![0_overview](img/0_overview.png)
+
 ## Proposal
 
 This dashboard aims to provide guidance on the living cost in 2022 and its main target audience is New York students who are looking for a place to travel or continue their studies. Please find more information from our [proposal](https://github.com/UBC-MDS/Student_Living_Guide/blob/main/reports/proposal.md).
