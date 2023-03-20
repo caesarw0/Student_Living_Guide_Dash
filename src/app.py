@@ -170,7 +170,7 @@ app.layout = html.Div([
             [
                 dbc.Col(
                     html.Div([
-                        html.Label('Select a continent', style={
+                        html.Label('Select Continent(s)', style={
                                    "marginBottom": "5px"}),
                         dcc.Dropdown(
                             id='continent-dropdown',
@@ -187,13 +187,13 @@ app.layout = html.Div([
                             value=['Africa', 'Asia', 'Europe',
                                    'North America', 'South America', 'Oceania'],
                             multi=True,
-                            placeholder='Select a continent',
+                            placeholder='Select Continent(s)',
                             clearable=False
                         )
                     ])
                 ),
                 dbc.Col(html.Div([
-                    html.Label('Select an index of interest',
+                    html.Label('Select an Index of Interest',
                                style={"marginBottom": "5px"}),
                     dcc.Dropdown(
                         id='index-dropdown',
@@ -274,7 +274,7 @@ app.layout = html.Div([
 @app.callback(Output('index-range-label', 'children'),
               Input('index-dropdown', 'value'))
 def update_label(index_value):
-    return f'Select a {index_value} range'
+    return f'Select a {index_value} Range'
 
 
 @app.callback(
@@ -456,7 +456,7 @@ def update_map(index_value, data):
         zoom=3,
         size=index_value,
         color=index_value,
-        color_continuous_scale=px.colors.diverging.Temps,  # Change the color scale here
+        color_continuous_scale=px.colors.diverging.Temps,
     )
     
     fig.update_layout(title=f'{index_value} Scatter Plot', 
