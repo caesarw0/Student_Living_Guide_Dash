@@ -541,4 +541,4 @@ def update_stack(index_value, data):
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8080))  # Default to 8080 if PORT not set
-    app.run(port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=True)
