@@ -1,3 +1,4 @@
+import os
 import dash
 from dash import html, dcc, dash_table
 import dash_bootstrap_components as dbc
@@ -539,4 +540,5 @@ def update_stack(index_value, data):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    port = int(os.environ.get("PORT", 8080))  # Default to 8080 if PORT not set
+    app.run(port=port, debug=True)
